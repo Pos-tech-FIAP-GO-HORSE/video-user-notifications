@@ -1,0 +1,25 @@
+service: video-notifications
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  environment:
+    NOTIFICATION_EMAIL: "no-reply@fiapx.com"
+
+functions:
+  notifyUser:
+    handler: src/handlers/notifyUser.handler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - NotificationQueue
+              - Arn
+
+resources:
+  Resources:
+    NotificationQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: video-notification-queue
