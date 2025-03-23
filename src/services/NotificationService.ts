@@ -1,29 +1,25 @@
 import nodemailer from 'nodemailer';
 
-export class NotificationService {
-  private transporter;
+const createTransporter = () => {
+  return nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    auth: {
+      user: "usuario_fake",
+      pass: "senha_fake"
+    }
+  });
+};
 
-  constructor() {
-    // Fake SMTP (usar Mailtrap ou console.log)
-    this.transporter = nodemailer.createTransport({
-      host: "smtp.mailtrap.io",
-      port: 2525,
-      auth: {
-        user: "usuario_fake",
-        pass: "senha_fake"
-      }
-    });
-  }
+export const sendEmail = async (to: string, videoName: string) => {
+  const transporter = createTransporter();
+  const info = await transporter.sendMail({
+    from: '"FIAP X Notificações" <no-reply@fiapx.com>',
+    to,
+    subject: "noreply: Atualização sobre seu vídeo",
+    text: `Você está recebendo essa mensagem porque houve um erro no processamento do seu vídeo - ${videoName}. Verifique a plataforma e tente novamente.`,
+  });
 
-  async sendEmail(to: string, content: string) {
-    const info = await this.transporter.sendMail({
-      from: '"FIAP X Notificações" <no-reply@fiapx.com>',
-      to,
-      subject: "Atualização sobre seu vídeo",
-      text: content,
-    });
-
-    console.log("Email enviado:", info.messageId);
-    return true;
-  }
-}
+  console.log("Email enviado:", info.messageId);
+  return true;
+};
