@@ -1,11 +1,9 @@
-service: video-notifications
+service: video-user-notifications
 
 provider:
   name: aws
   runtime: nodejs20.x
   region: us-east-1
-  environment:
-    NOTIFICATION_EMAIL: "no-reply@fiapx.com"
 
 functions:
   notifyUser:
