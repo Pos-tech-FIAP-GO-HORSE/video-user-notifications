@@ -1,15 +1,13 @@
 import { SQSEvent } from 'aws-lambda';
-import { NotificationService } from '../services/NotificationService';
+import { sendEmail } from '../services/NotificationService';
 
 export const handler = async (event: SQSEvent) => {
-  const service = new NotificationService();
-
   for (const record of event.Records) {
     const body = JSON.parse(record.body);
-    const { email, message } = body;
+    const { email, videoName } = body;
 
     try {
-      await service.sendEmail(email, message);
+      await sendEmail(email, videoName);
       console.log(`Notificação enviada para ${email}`);
     } catch (error) {
       console.error(`Erro ao notificar ${email}:`, error);
