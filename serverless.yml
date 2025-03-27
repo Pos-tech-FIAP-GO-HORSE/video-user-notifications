@@ -1,9 +1,26 @@
 service: video-user-notifications
 
+frameworkVersion: "3"
+
 provider:
   name: aws
   runtime: nodejs20.x
   region: us-east-1
+  environment:
+    SQS_QUEUE_URL: http://localhost:9324/000000000000/video-user-notifications-queue
+
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - sqs:ReceiveMessage
+            - sqs:DeleteMessage
+            - sqs:GetQueueAttributes
+          Resource:
+            Fn::GetAtt:
+              - NotificationQueue
+              - Arn
 
 functions:
   notifyUser:
@@ -14,10 +31,30 @@ functions:
             Fn::GetAtt:
               - NotificationQueue
               - Arn
+          batchSize: 1
 
 resources:
   Resources:
     NotificationQueue:
       Type: AWS::SQS::Queue
       Properties:
-        QueueName: video-notification-queue
+        QueueName: video-user-notifications-queue
+
+plugins:
+  - serverless-offline-sqs
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    httpPort: 3000
+  serverless-offline-sqs:
+    autoCreate: true
+    apiVersion: '2012-11-05'
+    endpoint: http://0.0.0.0:9324
+    region: us-east-1
+    accessKeyId: root
+    secretAccessKey: root
+    skipCacheInvalidation: false
+    queues:
+      - name: video-user-notifications-queue
+        url: http://localhost:9324/000000000000/video-user-notifications-queue
