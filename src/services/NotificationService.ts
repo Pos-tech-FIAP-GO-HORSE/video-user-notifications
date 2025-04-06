@@ -1,19 +1,17 @@
-import nodemailer from "nodemailer";
+interface MailOptions {
+	from: string;
+	to: string;
+	subject: string;
+	text: string;
+}
 
-const createTransporter = () => {
-	return nodemailer.createTransport({
-		host: "smtp.gmail.com",
-		port: 587,
-		auth: {
-			user: "usuario_fake",
-			pass: "senha_fake",
-		},
-	});
+// We are mocking the email sending (transporter)
+export const FAKE_TRANSPORTER = {
+	sendMail: async (mailOptions: MailOptions) => ({ messageId: "123" }),
 };
 
 export const sendEmail = async (to: string, videoName: string) => {
-	const transporter = createTransporter();
-	const info = await transporter.sendMail({
+	const info = await FAKE_TRANSPORTER.sendMail({
 		from: '"FIAP X Notificações" <no-reply@fiapx.com>',
 		to,
 		subject: "noreply: Atualização sobre seu vídeo",
