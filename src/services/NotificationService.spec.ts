@@ -1,52 +1,58 @@
-import nodemailer from 'nodemailer';
-import { sendEmail } from './NotificationService';
+import nodemailer from "nodemailer";
+import { sendEmail } from "./NotificationService";
 
 // Mock nodemailer
-jest.mock('nodemailer');
+jest.mock("nodemailer");
 
-describe('NotificationService', () => {
-  const mockSendMail = jest.fn().mockResolvedValue({ messageId: 'test-message-id' });
-  
-  const mockCreateTransport = jest.fn().mockReturnValue({
-    sendMail: mockSendMail
-  });
+describe("NotificationService", () => {
+	const mockSendMail = jest
+		.fn()
+		.mockResolvedValue({ messageId: "test-message-id" });
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-    (nodemailer.createTransport as jest.Mock).mockImplementation(mockCreateTransport);
-  });
+	const mockCreateTransport = jest.fn().mockReturnValue({
+		sendMail: mockSendMail,
+	});
 
-  it('should send email successfully', async () => {
-    const to = 'test@example.com';
-    const videoName = 'test-video.mp4';
+	beforeEach(() => {
+		jest.clearAllMocks();
+		(nodemailer.createTransport as jest.Mock).mockImplementation(
+			mockCreateTransport,
+		);
+	});
 
-    const result = await sendEmail(to, videoName);
+	it("should send email successfully", async () => {
+		const to = "test@example.com";
+		const videoName = "test-video.mp4";
 
-    expect(result).toBe(true);
-    expect(nodemailer.createTransport).toHaveBeenCalledWith({
-      host: 'smtp.gmail.com',
-      port: 587,
-      auth: {
-        user: 'usuario_fake',
-        pass: 'senha_fake'
-      }
-    });
+		const result = await sendEmail(to, videoName);
 
-    expect(mockSendMail).toHaveBeenCalledWith({
-      from: '"FIAP X Notificações" <no-reply@fiapx.com>',
-      to: 'test@example.com',
-      subject: 'noreply: Atualização sobre seu vídeo',
-      text: `Você está recebendo essa mensagem porque houve um erro no processamento do seu vídeo - test-video.mp4. Verifique a plataforma e tente novamente.`
-    });
-  });
+		expect(result).toBe(true);
+		expect(nodemailer.createTransport).toHaveBeenCalledWith({
+			host: "smtp.gmail.com",
+			port: 587,
+			auth: {
+				user: "usuario_fake",
+				pass: "senha_fake",
+			},
+		});
 
-  it('should handle email sending failure', async () => {
-    const error = new Error('Failed to send email');
-    mockSendMail.mockRejectedValueOnce(error);
+		expect(mockSendMail).toHaveBeenCalledWith({
+			from: '"FIAP X Notificações" <no-reply@fiapx.com>',
+			to: "test@example.com",
+			subject: "noreply: Atualização sobre seu vídeo",
+			text: "Você está recebendo essa mensagem porque houve um erro no processamento do seu vídeo - test-video.mp4. Verifique a plataforma e tente novamente.",
+		});
+	});
 
-    const to = 'test@example.com';
-    const videoName = 'test-video.mp4';
+	it("should handle email sending failure", async () => {
+		const error = new Error("Failed to send email");
+		mockSendMail.mockRejectedValueOnce(error);
 
-    await expect(sendEmail(to, videoName)).rejects.toThrow('Failed to send email');
-  });
+		const to = "test@example.com";
+		const videoName = "test-video.mp4";
+
+		await expect(sendEmail(to, videoName)).rejects.toThrow(
+			"Failed to send email",
+		);
+	});
 });
