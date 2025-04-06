@@ -4,7 +4,7 @@ frameworkVersion: "3"
 
 provider:
   name: aws
-  runtime: nodejs20.x
+  runtime: nodejs18.x
   region: us-east-1
   environment:
     SQS_QUEUE_URL: http://localhost:9324/000000000000/video-user-notifications-queue
@@ -41,6 +41,7 @@ resources:
         QueueName: video-user-notifications-queue
 
 plugins:
+  - serverless-plugin-typescript
   - serverless-offline-sqs
   - serverless-offline
 
