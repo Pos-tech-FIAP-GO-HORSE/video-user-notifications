@@ -1,10 +1,10 @@
-import type { SQSEvent } from "aws-lambda";
+import type { SNSEvent } from "aws-lambda";
 import { sendEmail } from "../services/NotificationService";
 
-export const handler = async (event: SQSEvent) => {
+export const handler = async (event: SNSEvent) => {
 	for (const record of event.Records) {
-		const body = JSON.parse(record.body);
-		const { email, videoName } = body;
+		const message = JSON.parse(record.Sns.Message);
+		const { email, videoName } = message;
 
 		try {
 			await sendEmail(email, videoName);
