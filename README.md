@@ -2,16 +2,16 @@
 
 Microserviço responsável por processar notificações de novos vídeos e enviar e-mails para os usuários.
 
-Este projeto foi desenvolvido com [Serverless Framework](https://www.serverless.com/), Node.js, TypeScript e simula o ambiente da AWS localmente utilizando filas SQS.
+Este projeto foi desenvolvido com [Serverless Framework](https://www.serverless.com/), Node.js, TypeScript e simula o ambiente da AWS localmente utilizando SNS.
 
 ---
 
 ## Funcionalidades
 
-- Escuta mensagens enviadas para uma fila SQS
+- Escuta mensagens enviadas para um tópico SNS
 - Processa cada mensagem individualmente
 - Envia e-mails de notificação (mockado localmente)
-- Simulação completa de ambiente AWS usando `serverless-offline` e `ElasticMQ`
+- Simulação completa de ambiente AWS usando `serverless-offline`
 
 ---
 
@@ -20,9 +20,10 @@ Este projeto foi desenvolvido com [Serverless Framework](https://www.serverless.
 - Node.js 18+
 - TypeScript
 - AWS Lambda (via Serverless Framework)
-- Amazon SQS (simulado com ElasticMQ)
+- Amazon SNS
 - Nodemailer (mockado)
 - Jest (testes)
+- Biome (linter)
 
 ---
 
@@ -36,13 +37,7 @@ npm install
 
 ## Executando Localmente
 
-###  Suba o SQS local com Docker
-
-```bash
-docker run -p 9324:9324 softwaremill/elasticmq
-```
-
-###  Inicie o ambiente offline
+### Inicie o ambiente offline
 
 ```bash
 npx serverless offline start
@@ -51,23 +46,21 @@ npx serverless offline start
 Você verá algo como:
 
 ```
-Offline [http for lambda] listening on http://localhost:3002
+Offline [http for lambda] listening on http://localhost:3000
 Function names exposed:
 * notifyUser: video-user-notifications-dev-notifyUser
 ```
 
 ---
 
-## Testando
+## Scripts Disponíveis
 
-### viando uma mensagem para a fila via `curl`:
-
-```bash
-curl -X POST http://localhost:9324/000000000000/video-user-notifications-queue \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  --data-urlencode 'Action=SendMessage' \
-  --data-urlencode 'MessageBody={"email":"usuario@exemplo.com","videoName":"Tutorial de Cozinha"}'
-```
+- `npm run build` - Compila o projeto TypeScript
+- `npm run dev` - Inicia o servidor de desenvolvimento
+- `npm test` - Executa os testes
+- `npm run deploy` - Faz deploy para a AWS
+- `npm run lint` - Executa o linter (Biome)
+- `npm run lint:fix` - Executa o linter e corrige problemas automaticamente
 
 ---
 
