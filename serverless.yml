@@ -6,15 +6,13 @@ provider:
   name: aws
   runtime: nodejs18.x
   region: us-east-1
-  version: v1
 
 functions:
   notifyUser:
     handler: src/handlers/notifyUser.handler
     events:
       - sns:
-          arn:
-            Ref: NotificationTopic
+          topicName: video-user-notification-topic
 
 resources:
   Resources:
