@@ -14,23 +14,6 @@ functions:
       - sns:
           topicName: video-user-notification-topic
 
-resources:
-  Resources:
-    NotificationTopic:
-      Type: AWS::SNS::Topic
-      Properties:
-        TopicName: video-user-notification-topic
-
-    LambdaInvokePermission:
-      Type: AWS::Lambda::Permission
-      Properties:
-        FunctionName:
-          Ref: NotifyUserLambdaFunction
-        Action: lambda:InvokeFunction
-        Principal: sns.amazonaws.com
-        SourceArn:
-          Ref: NotificationTopic
-
 plugins:
   - serverless-plugin-typescript
   - serverless-offline
