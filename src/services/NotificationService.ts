@@ -1,3 +1,7 @@
+import { SES } from 'aws-sdk';
+
+const ses = new SES();
+
 interface MailOptions {
 	from: string;
 	to: string;
@@ -5,19 +9,32 @@ interface MailOptions {
 	text: string;
 }
 
-// We are mocking the email sending (transporter)
-export const FAKE_TRANSPORTER = {
-	sendMail: async (mailOptions: MailOptions) => ({ messageId: "123" }),
-};
-
 export const sendEmail = async (to: string, videoName: string) => {
-	const info = await FAKE_TRANSPORTER.sendMail({
-		from: '"FIAP X Notificações" <no-reply@fiapx.com>',
-		to,
-		subject: "noreply: Atualização sobre seu vídeo",
-		text: `Você está recebendo essa mensagem porque houve um erro no processamento do seu vídeo - ${videoName}. Verifique a plataforma e tente novamente.`,
-	});
+	const params: SES.SendEmailRequest = {
+		Source: '"FIAP X Notificações" <postechfiap7@gmail.com>',
+		Destination: {
+			ToAddresses: [to],
+		},
+		Message: {
+			Subject: {
+				Data: "noreply: Atualização sobre seu vídeo",
+				Charset: 'UTF-8',
+			},
+			Body: {
+				Text: {
+					Data: `Você está recebendo essa mensagem porque houve um erro no processamento do seu vídeo - ${videoName}. Verifique a plataforma e tente novamente.`,
+					Charset: 'UTF-8',
+				},
+			},
+		},
+	};
 
-	console.log("Email enviado:", info.messageId);
-	return true;
+	try {
+		const result = await ses.sendEmail(params).promise();
+		console.log("Email enviado:", result.MessageId);
+		return true;
+	} catch (error) {
+		console.error("Erro ao enviar email:", error);
+		throw error;
+	}
 };
