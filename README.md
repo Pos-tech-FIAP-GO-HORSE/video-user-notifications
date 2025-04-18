@@ -10,8 +10,7 @@ Este projeto foi desenvolvido com [Serverless Framework](https://www.serverless.
 
 - Escuta mensagens enviadas para um tópico SNS
 - Processa cada mensagem individualmente
-- Envia e-mails de notificação (mockado localmente)
-- Simulação completa de ambiente AWS usando `serverless-offline`
+- Envia e-mails de notificação
 
 ---
 
@@ -21,7 +20,6 @@ Este projeto foi desenvolvido com [Serverless Framework](https://www.serverless.
 - TypeScript
 - AWS Lambda (via Serverless Framework)
 - Amazon SNS
-- Nodemailer (mockado)
 - Jest (testes)
 - Biome (linter)
 
