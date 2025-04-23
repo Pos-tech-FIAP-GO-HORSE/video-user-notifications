@@ -4,6 +4,9 @@ Microserviço responsável por processar notificações de novos vídeos e envia
 
 Este projeto foi desenvolvido com [Serverless Framework](https://www.serverless.com/), Node.js, TypeScript e simula o ambiente da AWS localmente utilizando SNS.
 
+## Video com explicação
+https://www.youtube.com/watch?v=9fGMerZ8gRs
+
 ---
 
 ## Funcionalidades
